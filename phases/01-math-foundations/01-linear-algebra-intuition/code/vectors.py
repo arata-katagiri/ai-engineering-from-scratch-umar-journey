@@ -24,7 +24,7 @@ class Vector:
 
     def cosine_similarity(self, other):
         return self.dot(other) / (self.magnitude() * other.magnitude())
-
+# 1
     def angle_between(self, other):
         import math
         cos_theta = self.cosine_similarity(other)
@@ -34,7 +34,7 @@ class Vector:
     def project_onto(self, other):
         scalar = self.dot(other) / other.dot(other)
         return Vector([scalar * x for x in other.components])
-
+    
     def __repr__(self):
         return f"Vector({self.components})"
 
@@ -209,3 +209,47 @@ if __name__ == "__main__":
     print(f"Input (3D):  {input_vec}")
     print(f"Output (2D): {output}")
     print("^ This is literally what a neural network layer does.")
+
+# 2
+    transform_matrix = Matrix([[2, 0], [3, 0]])
+    target_vector = Vector([1, 1])
+    print(transform_matrix @ target_vector)
+
+# 3
+    import random
+    random.seed(42)
+    words = ['alpha', 'beta', 'gamma', 'delta', 'epsilon']
+    vecs = [Vector([random.gauss(0, 1) for _ in range(50)]) for _ in words]
+
+    best_sim, best_pair = -float('inf'), None
+    for i in range(len(vecs)):
+        for j in range(i+1, len(vecs)):
+            s = vecs[i].cosine_similarity(vecs[j])
+            if s > best_sim:
+                best_sim, best_pair = s, (words[i], words[j])
+    
+    print(best_pair, best_sim)
+
+# 4
+    u1, u2, u3 = Vector([1, 1, 0]), Vector([1, 0, 1]), Vector([0, 1, 1])
+    basis = gram_schmidt([u1, u2, u3])
+
+    for i in range(len(basis)):
+        for j in range(i+1, len(basis)):
+            print(f"u{i+1}*u{j+1} = {basis[i].dot(basis[j]):.10f}")
+    
+    for i, v in enumerate(basis):
+        print(f"|u{i+1}| = {v.magnitude():.10f}")
+
+# 5
+    M = Matrix([[1, 2, 3],
+                [2, 4, 6],
+                [0, 1, 2]])
+    print(M.rank())
+
+# 6
+    a = Vector([1, 2, 3])
+    b = Vector([1, 1, 1])
+    proj = a.project_onto(b)
+    residual = a - proj
+    print(residual.dot(b))
